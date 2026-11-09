@@ -3,7 +3,7 @@ import { Link, NavLink, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'motion/react'
 import { useLenis } from 'lenis/react'
 import { contact, nav, services, socials } from '../data/site'
-import { Arrow, Button, DuckMark, Magnetic, Marquee } from './ui'
+import { Arrow, Button, DuckMark, Icon, Magnetic, Marquee } from './ui'
 
 const ease = [0.22, 1, 0.36, 1]
 
@@ -46,14 +46,49 @@ export function Nav() {
                       <path d="M2 4l3 3 3-3" stroke="currentColor" fill="none" strokeWidth="1.4" />
                     </svg>
                   </NavLink>
-                  <div className="mega">
-                    <div className="mega__grid">
-                      {services.map((s, i) => (
-                        <Link key={s.slug} to={`/services#${s.slug}`} className="mega__item">
-                          <span className="mega__num">0{i + 1}</span>
-                          <span>{s.title}</span>
+                  <div className="mega" role="region" aria-label="Services">
+                    <div className="mega__panel">
+                      <div className="mega__main">
+                        <div className="mega__head">
+                          <span className="mega__kicker">What we do</span>
+                          <Link to="/services" className="mega__all">
+                            All services <Arrow size={12} />
+                          </Link>
+                        </div>
+                        <div className="mega__grid">
+                          {services.map((s, i) => (
+                            <Link
+                              key={s.slug}
+                              to={`/services#${s.slug}`}
+                              className="mega__item"
+                              style={{ '--tone': s.tone, '--i': i }}
+                            >
+                              <span className="mega__icon">
+                                <Icon name={s.icon} size={22} />
+                              </span>
+                              <span className="mega__text">
+                                <span className="mega__title">
+                                  {s.title}
+                                  <Arrow size={11} />
+                                </span>
+                                <span className="mega__desc">{s.intro.split('. ')[0]}.</span>
+                              </span>
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                      <aside className="mega__feature">
+                        <img src="/logo.png" alt="" className="mega__logo" width="640" height="459" loading="lazy" />
+                        <span className="mega__kicker mega__kicker--light">Not sure where to start?</span>
+                        <p className="mega__pitch">
+                          Tell us about your idea and we&rsquo;ll help you pick the right mix of services for where you are.
+                        </p>
+                        <Link to="/contact" className="mega__cta">
+                          Book a free consultation
+                          <span><Arrow size={12} /></span>
                         </Link>
-                      ))}
+                        <a href={contact.phoneHref} className="mega__phone">{contact.phone}</a>
+                      </aside>
                     </div>
                   </div>
                 </div>

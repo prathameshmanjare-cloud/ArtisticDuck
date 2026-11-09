@@ -105,20 +105,12 @@ export function HeroLogo({ ready }) {
         animate={ready ? { opacity: 1, scale: 1, y: 0, filter: 'blur(0px)' } : {}}
         transition={{ delay: 0.35, duration: 1.4, ease }}
       >
-        <motion.div
-          className="hero__float"
-          animate={reduce ? {} : { y: [0, -16, 0], rotate: [0, -1.5, 0] }}
-          transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-        >
+        <div className="hero__float">
           <img src="/logo.png" alt="" width="640" height="459" fetchPriority="high" />
           <span className="hero__shine" />
-        </motion.div>
+        </div>
       </motion.div>
-      <motion.div
-        className="hero__shadow"
-        animate={reduce ? {} : { scaleX: [1, 0.86, 1], opacity: [0.55, 0.35, 0.55] }}
-        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-      />
+      <div className="hero__shadow" />
     </div>
   )
 }
