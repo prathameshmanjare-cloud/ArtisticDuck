@@ -1,12 +1,11 @@
-import { lazy, Suspense, useRef } from 'react'
+import { useRef } from 'react'
 import { motion, useScroll, useTransform } from 'motion/react'
 import { contact } from '../data/site'
 import { Button, Eyebrow, Marquee, Reveal, SplitLine } from '../components/ui'
 import Showcase from '../components/Showcase'
 import ServiceRows from '../components/ServiceRows'
 import ContactForm from '../components/ContactForm'
-
-const DuckScene = lazy(() => import('../three/DuckScene'))
+import { HeroBackdrop, HeroLogo } from '../components/HeroLogo'
 
 const journey = [
   { k: 'Idea', t: 'You bring the spark', d: 'A napkin sketch, a product, a half-built pitch deck. That is enough to start.' },
@@ -24,29 +23,63 @@ export default function Home({ ready }) {
   return (
     <>
       <section className="hero" ref={hero}>
-        <Suspense fallback={null}>{ready && <DuckScene />}</Suspense>
-        <div className="hero__shade" aria-hidden="true" />
-        <div className="hero__grain" aria-hidden="true" />
-        <motion.div className="wrap hero__copy" style={{ y: copyY, opacity: copyO }}>
-          <motion.p className="eyebrow eyebrow--light" initial={{ opacity: 0 }} animate={{ opacity: ready ? 1 : 0 }} transition={{ delay: 0.2 }}>
-            <span className="dot" /> Branding · Advertising · Marketing · Tech
-          </motion.p>
-          <h1 className="display hero__title">
-            <span className="line"><SplitLine text="We don’t just market" animate={ready} delay={0.25} /></span>
-            <span className="line"><SplitLine text="businesses. We turn" animate={ready} delay={0.4} /></span>
-            <span className="line"><SplitLine text="them into *brands.*" animate={ready} delay={0.55} /></span>
-          </h1>
-          <motion.div initial={{ opacity: 0, y: 24 }} animate={ready ? { opacity: 1, y: 0 } : {}} transition={{ delay: 1, duration: 0.9 }}>
-            <p className="hero__sub">
-              At Artistic Duck Media and Tech, we partner with startups and growing businesses to transform ideas into powerful brands
-              through creativity, strategy, and technology.
-            </p>
-            <div className="row gap">
-              <Button to="/contact" variant="duck">Start your brand journey</Button>
-              <Button href={contact.phoneHref} variant="ghost-light">Book a free consultation</Button>
-            </div>
+        <HeroBackdrop />
+        <div className="wrap hero__grid">
+          <motion.div className="hero__copy" style={{ y: copyY, opacity: copyO }}>
+            <motion.p
+              className="hero__tags"
+              initial={{ opacity: 0, y: 12 }}
+              animate={ready ? { opacity: 1, y: 0 } : {}}
+              transition={{ delay: 0.2, duration: 0.8 }}
+            >
+              <span className="dot" />
+              {['Branding', 'Advertising', 'Marketing', 'Tech'].map((t, i) => (
+                <span key={t} className="hero__tag">
+                  {i > 0 && <i aria-hidden="true">·</i>}
+                  {t}
+                </span>
+              ))}
+            </motion.p>
+            <h1 className="hero__title">
+              <span className="line"><SplitLine text="We don’t just market" animate={ready} delay={0.25} /></span>
+              <span className="line"><SplitLine text="businesses. We turn" animate={ready} delay={0.4} /></span>
+              <span className="line">
+                <SplitLine text="them into" animate={ready} delay={0.55} />{' '}
+                <span className="hero__accent">
+                  <SplitLine text="brands." animate={ready} delay={0.7} />
+                  <motion.svg
+                    className="hero__swoosh"
+                    viewBox="0 0 220 16"
+                    preserveAspectRatio="none"
+                    aria-hidden="true"
+                  >
+                    <motion.path
+                      d="M4 11 C 60 3, 150 2, 216 9"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                      strokeLinecap="round"
+                      initial={{ pathLength: 0 }}
+                      animate={ready ? { pathLength: 1 } : {}}
+                      transition={{ delay: 1.25, duration: 0.9, ease: [0.65, 0, 0.35, 1] }}
+                    />
+                  </motion.svg>
+                </span>
+              </span>
+            </h1>
+            <motion.div initial={{ opacity: 0, y: 24 }} animate={ready ? { opacity: 1, y: 0 } : {}} transition={{ delay: 1, duration: 0.9 }}>
+              <p className="hero__sub">
+                At Artistic Duck Media and Tech, we partner with startups and growing businesses to transform ideas into powerful brands
+                through creativity, strategy, and technology.
+              </p>
+              <div className="row hero__ctas">
+                <Button to="/contact" variant="duck">Start your brand journey</Button>
+                <Button href={contact.phoneHref} variant="ghost-light">Book a free consultation</Button>
+              </div>
+            </motion.div>
           </motion.div>
-        </motion.div>
+          <HeroLogo ready={ready} />
+        </div>
         <motion.div className="hero__base wrap" initial={{ opacity: 0 }} animate={{ opacity: ready ? 1 : 0 }} transition={{ delay: 1.4 }}>
           <span>Pune, India</span>
           <span className="hero__scroll">
