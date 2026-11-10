@@ -1,80 +1,51 @@
 import { useEffect } from 'react'
 import { motion, useMotionValue, useReducedMotion, useSpring, useTransform } from 'motion/react'
+import { Icon } from './ui'
 
 const ease = [0.22, 1, 0.36, 1]
 
-// Full-bleed decorative layer: soft light, thin gold orbit arc and the sweeping wave at the bottom.
-export function HeroBackdrop() {
+const chips = [
+  { t: ['Grow', 'faster'], icon: 'chart', cls: 'chip3d--a', depth: 26 },
+  { t: ['Build', 'smarter'], icon: 'code', cls: 'chip3d--b', depth: 40 },
+  { t: ['Think', 'bigger'], icon: 'bulb', cls: 'chip3d--c', depth: 18 },
+  { t: ['Create', 'better'], icon: 'palette', cls: 'chip3d--d', depth: 32 },
+]
+
+function Chip({ c, sx, sy, ready, i }) {
+  const x = useTransform(sx, [-1, 1], [-c.depth, c.depth])
+  const y = useTransform(sy, [-1, 1], [-c.depth * 0.6, c.depth * 0.6])
   return (
-    <div className="hero__bg" aria-hidden="true">
-      <div className="hero__glow hero__glow--a" />
-      <div className="hero__glow hero__glow--b" />
-      <svg className="hero__waves" viewBox="0 0 1600 1000" preserveAspectRatio="xMaxYMax slice">
-        <defs>
-          <linearGradient id="hw-gold" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0" stopColor="#ffb715" stopOpacity="0" />
-            <stop offset="0.35" stopColor="#ffb715" stopOpacity="0.9" />
-            <stop offset="0.75" stopColor="#ffd56a" stopOpacity="1" />
-            <stop offset="1" stopColor="#ffb715" stopOpacity="0.6" />
-          </linearGradient>
-          <linearGradient id="hw-arc" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stopColor="#ffb715" stopOpacity="0" />
-            <stop offset="0.4" stopColor="#ffcf5a" stopOpacity="0.55" />
-            <stop offset="1" stopColor="#5f8cff" stopOpacity="0.25" />
-          </linearGradient>
-          <linearGradient id="hw-fill" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="#1d3c9a" stopOpacity="0.55" />
-            <stop offset="1" stopColor="#0a1440" stopOpacity="0" />
-          </linearGradient>
-        </defs>
-        <motion.path
-          d="M930 420 C 980 250, 1130 150, 1290 145 C 1450 140, 1560 230, 1600 300"
-          fill="none"
-          stroke="url(#hw-arc)"
-          strokeWidth="1.6"
-          initial={{ pathLength: 0 }}
-          animate={{ pathLength: 1 }}
-          transition={{ delay: 0.6, duration: 2.2, ease }}
-        />
-        <path d="M0 1000 L0 930 C 380 900, 760 820, 1080 760 C 1300 720, 1470 700, 1600 690 L1600 1000 Z" fill="url(#hw-fill)" />
-        <motion.path
-          className="hero__wave"
-          d="M260 960 C 560 900, 820 820, 1080 770 C 1300 728, 1460 712, 1600 706"
-          fill="none"
-          stroke="url(#hw-gold)"
-          strokeWidth="2.4"
-          strokeLinecap="round"
-          initial={{ pathLength: 0, opacity: 0 }}
-          animate={{ pathLength: 1, opacity: 1 }}
-          transition={{ delay: 0.9, duration: 2.4, ease }}
-        />
-        <motion.path
-          d="M620 1000 C 900 940, 1200 860, 1600 780"
-          fill="none"
-          stroke="url(#hw-gold)"
-          strokeWidth="1.4"
-          strokeOpacity="0.55"
-          initial={{ pathLength: 0 }}
-          animate={{ pathLength: 1 }}
-          transition={{ delay: 1.2, duration: 2.4, ease }}
-        />
-      </svg>
-      <div className="hero__grain" />
-    </div>
+    <motion.div className={`chip3d ${c.cls}`} style={{ x, y }}>
+      <motion.div
+        className="chip3d__in"
+        initial={{ opacity: 0, scale: 0.8, filter: 'blur(8px)' }}
+        animate={ready ? { opacity: 1, scale: 1, filter: 'blur(0px)' } : {}}
+        transition={{ delay: 0.9 + i * 0.12, duration: 0.9, ease }}
+      >
+        <span className="chip3d__icon">
+          <Icon name={c.icon} size={20} stroke={2} />
+        </span>
+        <span>
+          {c.t[0]}
+          <br />
+          {c.t[1]}
+        </span>
+      </motion.div>
+    </motion.div>
   )
 }
 
-// The brand mark with an entrance, a slow float, a breathing glow and pointer-driven tilt.
-export function HeroLogo({ ready }) {
+// The brand mark on a lit pedestal, with glass chips and abstract objects that respond to the pointer.
+export function HeroVisual({ ready = true }) {
   const reduce = useReducedMotion()
   const mx = useMotionValue(0)
   const my = useMotionValue(0)
-  const sx = useSpring(mx, { stiffness: 60, damping: 18 })
-  const sy = useSpring(my, { stiffness: 60, damping: 18 })
-  const rotateY = useTransform(sx, [-1, 1], [-10, 10])
-  const rotateX = useTransform(sy, [-1, 1], [8, -8])
-  const glowX = useTransform(sx, [-1, 1], [-24, 24])
-  const glowY = useTransform(sy, [-1, 1], [-18, 18])
+  const sx = useSpring(mx, { stiffness: 50, damping: 18 })
+  const sy = useSpring(my, { stiffness: 50, damping: 18 })
+  const rotateY = useTransform(sx, [-1, 1], [-9, 9])
+  const rotateX = useTransform(sy, [-1, 1], [6, -6])
+  const objX = useTransform(sx, [-1, 1], [30, -30])
+  const objY = useTransform(sy, [-1, 1], [20, -20])
 
   useEffect(() => {
     if (reduce || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return
@@ -87,30 +58,50 @@ export function HeroLogo({ ready }) {
   }, [mx, my, reduce])
 
   return (
-    <div className="hero__visual" aria-hidden="true">
-      <motion.div className="hero__halo" style={{ x: glowX, y: glowY }} />
-      <motion.div
-        className="hero__ring"
-        initial={{ opacity: 0, scale: 0.85 }}
-        animate={ready ? { opacity: 1, scale: 1 } : {}}
-        transition={{ delay: 0.5, duration: 1.4, ease }}
-      >
-        <span className="hero__orbit hero__orbit--1"><i /></span>
-        <span className="hero__orbit hero__orbit--2"><i /></span>
+    <div className="hv" aria-hidden="true">
+      <div className="hv__beam" />
+      <motion.div className="hv__objects" style={{ x: objX, y: objY }}>
+        <span className="obj obj--sphere" />
+        <span className="obj obj--sphere-sm" />
+        <span className="obj obj--torus" />
+        <span className="obj obj--cube">
+          <i />
+          <i />
+          <i />
+        </span>
+        <span className="obj obj--pill" />
       </motion.div>
+
       <motion.div
-        className="hero__mark"
-        style={{ rotateX, rotateY }}
-        initial={{ opacity: 0, scale: 0.7, y: 40, filter: 'blur(14px)' }}
-        animate={ready ? { opacity: 1, scale: 1, y: 0, filter: 'blur(0px)' } : {}}
-        transition={{ delay: 0.35, duration: 1.4, ease }}
+        className="hv__stage"
+        initial={{ opacity: 0, y: 40 }}
+        animate={ready ? { opacity: 1, y: 0 } : {}}
+        transition={{ delay: 0.3, duration: 1.2, ease }}
       >
-        <div className="hero__float">
-          <img src="/logo.png" alt="" width="640" height="459" fetchPriority="high" />
-          <span className="hero__shine" />
+        <div className="hv__orbit">
+          <span />
+          <span />
         </div>
+        <div className="hv__pedestal">
+          <span className="hv__ring hv__ring--1" />
+          <span className="hv__ring hv__ring--2" />
+          <span className="hv__disc" />
+        </div>
+        <motion.div
+          className="hv__mark"
+          style={{ rotateX, rotateY }}
+          initial={{ opacity: 0, scale: 0.75, filter: 'blur(14px)' }}
+          animate={ready ? { opacity: 1, scale: 1, filter: 'blur(0px)' } : {}}
+          transition={{ delay: 0.45, duration: 1.3, ease }}
+        >
+          <img src="/logo.png" alt="" width="640" height="459" fetchPriority="high" />
+          <span className="hv__shine" />
+        </motion.div>
       </motion.div>
-      <div className="hero__shadow" />
+
+      {chips.map((c, i) => (
+        <Chip key={c.cls} c={c} sx={sx} sy={sy} ready={ready} i={i} />
+      ))}
     </div>
   )
 }
