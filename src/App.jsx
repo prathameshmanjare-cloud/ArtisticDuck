@@ -15,6 +15,18 @@ const Article = lazy(() => import('./pages/Insights').then((m) => ({ default: m.
 const Contact = lazy(() => import('./pages/Contact'))
 import NotFound from './pages/NotFound'
 
+// /connect is a separate Vite entry (connect/index.html). If the SPA router ever sees it
+// (e.g. a client-side link), hand over to the real page with a full load.
+// Guarded so a misconfigured host that serves the SPA for /connect/ shows 404 instead of looping.
+function ConnectRedirect() {
+  const { pathname } = useLocation()
+  const loops = pathname.endsWith('/')
+  useEffect(() => {
+    if (!loops) window.location.replace('/connect/')
+  }, [loops])
+  return loops ? <NotFound /> : null
+}
+
 const ease = [0.76, 0, 0.24, 1]
 
 function ScrollManager() {
@@ -77,6 +89,7 @@ export default function App() {
                 <Route path="/insights" element={<Insights />} />
                 <Route path="/insights/:slug" element={<Article />} />
                 <Route path="/contact" element={<Contact />} />
+                <Route path="/connect/*" element={<ConnectRedirect />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
               </Suspense>
